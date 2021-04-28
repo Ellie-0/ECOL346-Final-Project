@@ -1,0 +1,82 @@
+---
+title: "make_trees"
+author: "Maya Bose"
+date: "4/1/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ape)
+library(phytools)
+library(phangorn)
+```
+
+Define function to read in protein tree and species tree, then compute the RF 
+distance between them:
+```{r}
+compute.tree.dist <- function(protein.filename, species.filename, env, protein){
+  
+  # read in first protein tree
+  protein.tree <- ape::read.nexus(file = protein.filename)
+  if (length(protein.tree) > 3){
+    protein.tree <- ape::read.nexus(file = protein.filename)[[1]]
+  }
+  
+  # read in first species tree
+  species.tree <- ape::read.nexus(file = species.filename)
+  if (length(species.tree) > 3){
+    species.tree <- ape::read.nexus(file = species.filename)[[1]]
+  }
+  
+  # calculate the normalized RF distance between the two trees
+  rf <- (treedist(protein.tree, species.tree)[[1]])/ (2 * length(protein.tree$tip.label) - 6)
+  print(protein)
+  # Print distance between protein tree and species tree
+  print(paste("The RF distance between the ", protein, " protein tree and the ",
+              protein, " species tree is ", rf, " for ", env, " fish.", sep = ""))
+}
+```
+
+                 
+Run function for all comparisons
+```{r}
+print("Opsin")
+compute.tree.dist("./deep_gene_tre/deep_opsin.tre", 
+                  "./deep_species_tree/deep_opsin_v_cytochrome.tre", 
+                  "deep-water", "Opsin")
+compute.tree.dist("./shallow_gene_tree/shallow_opsin.tre",
+                  "./shallow_species_tree/shallow_opsin_v_cytochrome.tre",
+                  "shallow-water", "Opsin")
+
+print("Crystallin")
+compute.tree.dist("./shallow_gene_tree/shallow_crystallin.tre",
+                  "./shallow_species_tree/shallow_crystallin_v_cytochrome.tre", 
+                  "shallow-water", "Crystallin")
+
+print("H+ ATPase")
+compute.tree.dist("./salt_gene_tree/salt_HpATPase.tre", 
+                  "./salt_species_tree/salt_HpATPase_v_cytochrome.tre",
+                  "saltwater", "H+ ATPase")
+compute.tree.dist("./fresh_gene_tre/fresh_HpATPase.tre", 
+                  "./fresh_species_tree/fresh_HpATPase_v_cytochrome.tre",
+                  "freshwater", "H+ ATPase")
+
+
+print("Sodium/Hydrogen Exchanger")
+compute.tree.dist("./salt_gene_tree/salt_naHexchange.tre",
+                  "./salt_species_tree/salt_naHexchange_v_cytochrome.tre",
+                  "saltwater", "Sodium/Hydrogen Exchanger")
+compute.tree.dist("./fresh_gene_tre/fresh_naHexchange.tre",
+                  "./fresh_species_tree/fresh_naHexchange_v_cytochrome.tre",
+                  "freshwater", "Sodium/Hydrogen Exchanger")
+
+
+print("Sodium/Potassium ATPase")
+compute.tree.dist("./salt_gene_tree/salt_nakATPase.tre", 
+                  "./salt_species_tree/salt_nakATPase_v_cytochrome.tre",
+                  "saltwater", "Sodium/Potassium ATPase")
+compute.tree.dist("./fresh_gene_tre/fresh_nakATPase.tre",
+                  "./fresh_species_tree/fresh_nakATPase_v_cytochrome.tre",
+                  "freshwater", "Sodium/Potassium ATPase")
+```
