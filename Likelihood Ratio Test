@@ -1,0 +1,16 @@
+Author: Ellie Asadi
+Program : PAUP
+Output: Likelihood values, three protein trees with branch lengths
+
+Set criterion = likelihood
+File > open > "Nexus file of interest"
+File > Execute "Nexus file of interest"
+hsearch
+lset kappa=1 aaRMatrix=WAG
+lscores
+# We would record the obtained Likelihood value.
+rootTrees
+lset clock = yes
+lscores
+# We will record this likelihood value as well. It is the likelihood value with the molecular clock option enabled.
+
